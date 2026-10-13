@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Student Management Dashboard built with Flask, JavaScript and MariaDB."
+    >
+
+    <title>StudentHub | Student Management</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="#" class="brand">
+                <span class="brand-icon">S</span>
+                <span>Student<span class="brand-highlight">Hub</span></span>
+            </a>
+
+            <div class="sidebar-label">WORKSPACE</div>
+
+            <nav class="navigation">
+                <a href="#dashboard" class="nav-link active">
+                    <span class="nav-icon">▦</span>
+                    Dashboard
+                </a>
+
+                <a href="#students-section" class="nav-link">
+                    <span class="nav-icon">♙</span>
+                    Students
+                </a>
+
+                <a href="#add-student-section" class="nav-link">
+                    <span class="nav-icon">＋</span>
+                    Add Student
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="status-indicator"></div>
+                <div>
+                    <strong>StudentHub API</strong>
+                    <p id="api-status">Checking connection...</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="dashboard">
+
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">STUDENT MANAGEMENT SYSTEM</p>
+                    <h1>Dashboard</h1>
+                    <p class="page-subtitle">
+                        Manage your student records in one place.
+                    </p>
+                </div>
+
+                <div class="profile">
+                    <div class="profile-avatar">SH</div>
+                    <div>
+                        <strong>Admin</strong>
+                        <span>Administrator</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Statistics -->
+            <section class="stats-grid" aria-label="Student statistics">
+
+                <article class="stat-card">
+                    <div class="stat-icon purple">♙</div>
+                    <p>Total Students</p>
+                    <h2 id="total-students">0</h2>
+                    <span class="stat-note">Registered records</span>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-icon blue">▤</div>
+                    <p>Courses</p>
+                    <h2 id="total-courses">0</h2>
+                    <span class="stat-note">Unique courses</span>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-icon green">✓</div>
+                    <p>API Status</p>
+                    <h2 id="api-summary">Checking</h2>
+                    <span class="stat-note">Backend connection</span>
+                </article>
+            </section>
+
+            <!-- Notifications -->
+            <div id="notification" class="notification" role="status" hidden></div>
+
+            <!-- Add Student Form -->
+            <section class="panel" id="add-student-section">
+                <div class="section-heading">
+                    <div>
+                        <h2>Add New Student</h2>
+                        <p>Enter the student details below.</p>
+                    </div>
+                    <span class="section-badge">NEW RECORD</span>
+                </div>
+
+                <form id="student-form">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="student-name">Full Name</label>
+                            <input
+                                type="text"
+                                id="student-name"
+                                name="name"
+                                placeholder="Enter full name"
+                                maxlength="100"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="student-email">Email Address</label>
+                            <input
+                                type="email"
+                                id="student-email"
+                                name="email"
+                                placeholder="student@example.com"
+                                maxlength="150"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="student-course">Course</label>
+                            <input
+                                type="text"
+                                id="student-course"
+                                name="course"
+                                placeholder="e.g. Cloud Computing"
+                                maxlength="100"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="student-age">Age</label>
+                            <input
+                                type="number"
+                                id="student-age"
+                                name="age"
+                                placeholder="Enter age"
+                                min="1"
+                                max="120"
+                                step="1"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-secondary">
+                            Clear
+                        </button>
+
+                        <button type="submit" class="btn btn-primary" id="submit-button">
+                            <span>＋</span> Add Student
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Student Records -->
+            <section class="panel" id="students-section">
+                <div class="section-heading records-heading">
+                    <div>
+                        <h2>Student Records</h2>
+                        <p>View and manage registered students.</p>
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" id="refresh-button">
+                        ↻ Refresh
+                    </button>
+                </div>
+
+                <div class="table-toolbar">
+                    <label for="student-search" class="visually-hidden">
+                        Search students
+                    </label>
+
+                    <input
+                        type="search"
+                        id="student-search"
+                        placeholder="Search by name, email or course..."
+                    >
+
+                    <span id="record-count">0 records</span>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>STUDENT</th>
+                                <th>COURSE</th>
+                                <th>AGE</th>
+                                <th>CREATED</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="students-table-body">
+                            <tr>
+                                <td colspan="6" class="empty-state">
+                                    Loading student records...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-footer">
+                    <span>StudentHub Management Console</span>
+                    <span>Powered by Flask &amp; MariaDB</span>
+                </div>
+            </section>
+
+            <footer class="page-footer">
+                <p>StudentHub © 2026 · DevOps Learning Project</p>
+                <p>Built with Python, Flask, JavaScript &amp; MariaDB</p>
+            </footer>
+
+        </main>
+    </div>
+</body>
+</html>
